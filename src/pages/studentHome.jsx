@@ -11,12 +11,13 @@ const StudentHome = () => {
   const [request, setRequest] = useState(null);
   const [fees, setFees] = useState(null);
   const navigate = useNavigate();
+  const dep = localStorage.getItem("department");
 
   useEffect(() => {
     const email = localStorage.getItem("email");
 
     axios
-      .get("http://localhost:5000/hod/notice/CS")
+      .get(`http://localhost:5000/hod/notice/${dep}`) // Updated to use department
       .then((response) => setNotices(response.data.notices))
       .catch((error) => console.error("Error fetching notices:", error));
 
@@ -59,8 +60,19 @@ const StudentHome = () => {
   };
 
   const handlePayFees = () => {
+    const email = localStorage.getItem("email");
+    axios.post('http://localhost:5000/student/fee', {
+      email: email,
+      feeStat: "paid",
+      fees
+    })
+    .then(() => {
+    })
+    .catch(() => alert('Error updating fee!'));
     navigate("/payfees");
+
   };
+  
 
   const handleLogout = () => {
     localStorage.clear();

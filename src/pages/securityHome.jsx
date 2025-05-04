@@ -178,7 +178,7 @@ const SecurityHome = () => {
         <h2>📢 Notices from HOD</h2>
         <ul className="notice-list">
           {notices.length > 0 ? (
-            notices.map((notice, index) => <li key={index}>{notice.description}</li>)
+            notices.map((notice, index) => <li key={index}>{notice.description}.{notice.department}</li>)
           ) : (
             <li>No notices available.</li>
           )}

@@ -33,6 +33,7 @@ const Login = () => {
         student: "/student",
         hod: "/hod",
         sec: "/security",
+        teacher: "/teacher",
       };
       window.location.href = routes[role] || "/dashboard";
     } catch (error) {

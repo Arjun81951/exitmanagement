@@ -8,6 +8,8 @@ import SecurityHome from '../pages/securityHome';
 import ScanResult from '../pages/scanResult';
 import PayFees from '../pages/payfees';
 import NotFound from'../pages/NotFound';
+import TeacherHome from '../pages/teacherHome';
+import Requests from '../pages/requests';
 const isAuthenticated = () => {
     return !!localStorage.getItem('accessToken');
 };
@@ -22,6 +24,7 @@ const LoginGuard = ({ children }) => {
         if (role === 'student') return <Navigate to="/student" />;
         if (role === 'hod') return <Navigate to="/hod" />;
         if (role === 'security') return <Navigate to="/security" />;
+        if (role === 'teacher') return <Navigate to="/teacher" />;
     }
     return children;
 };
@@ -39,6 +42,8 @@ const Router = () => {
             <Route path="/student" element={<AuthGuard><StudentHome/></AuthGuard>}></Route>
             <Route path="/student/qr" element={<AuthGuard><StudentQr/></AuthGuard>}></Route>
             <Route path="/hod" element={<AuthGuard><HodHome/></AuthGuard>}></Route>
+            <Route path="/teacher" element={<AuthGuard><TeacherHome/></AuthGuard>}></Route>
+            <Route path="/report" element={<AuthGuard><Requests/></AuthGuard>}></Route>
             <Route path="/qr" element={<AuthGuard><StudentQr/></AuthGuard>}></Route>
             <Route path="/security" element={<AuthGuard><SecurityHome/></AuthGuard>}></Route>
             <Route path="/result" element={<AuthGuard><ScanResult/></AuthGuard>}></Route>

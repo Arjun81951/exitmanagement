@@ -11,9 +11,11 @@ const HodHome = () => {
   const [noticeContent, setNoticeContent] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
+  const [isAllFeeModalOpen, setIsAllFeeModalOpen] = useState(false);
   const [messageContent, setMessageContent] = useState('');
   const [selectedStudentEmail, setSelectedStudentEmail] = useState('');
   const [fees, setFees] = useState('');
+  const [allFees, setAllFees] = useState('');
   const dep = localStorage.getItem('department');
   const navigate = useNavigate();
 
@@ -26,7 +28,7 @@ const HodHome = () => {
       .then(response => setAllStudents(response.data.students))
       .catch(() => alert('Error fetching all students!'));
 
-    axios.get(`http://localhost:5000/student/requests/${dep}`)
+    axios.get(`http://localhost:5000/hod/requests/${dep}`)
       .then(response => setExitRequests(response.data.requests))
       .catch(() => alert('Error fetching exit requests!'));
   }, [dep]);
@@ -65,6 +67,10 @@ const HodHome = () => {
     setSelectedStudentEmail(email);
     setIsModalOpen(true);
   };
+  const handleUpdateAllFee = (email) => {
+    setSelectedStudentEmail(email);
+    setIsAllFeeModalOpen(true);
+  };
 
   const handleUpdateFee = (email) => {
     setSelectedStudentEmail(email);
@@ -86,14 +92,30 @@ const HodHome = () => {
   const handlUpdate = () => {
     axios.post('http://localhost:5000/student/fee', {
       email: selectedStudentEmail,
+      feeStat:"pending",
       fees
     })
     .then(() => {
+      window.location.reload()
       setIsFeeModalOpen(false);
       setFees('');
     })
     .catch(() => alert('Error updating fee!'));
   };
+  const handlUpdateAll = () => {
+    axios.post('http://localhost:5000/student/fees/all', {
+      dep: dep,
+      feeStat:"pending",
+      fees:allFees
+    })
+    .then(() => {
+      window.location.reload()
+      setIsAllFeeModalOpen(false);
+      setFees('');
+    })
+    .catch(() => alert('Error updating fee!'));
+  };
+
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -101,17 +123,24 @@ const HodHome = () => {
   };
 
   const handleCloseFeeModal = () => setIsFeeModalOpen(false);
+  const handleCloseAllFeeModal = () => setIsAllFeeModalOpen(false);
 
   const handleLogout = () => {
     localStorage.clear();
     navigate('/');
+  };
+  const handleClick = () => {
+    navigate('/report');
   };
 
   return (
     <div className="hod-container">
       <header className="hod-header">
         <h1>HOD Dashboard</h1>
+        <button  onClick={handleUpdateAllFee}>update Fees to all</button>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <button className="logout-button" onClick={handleClick}>Exit Report</button>
+
       </header>
 
       <section className="hod-section">
@@ -150,6 +179,25 @@ const HodHome = () => {
                 <td>{student.department}</td>
                 <td><button onClick={() => handleUpdateFee(student.email)}>Update Fees</button></td>
                 <td><button onClick={() => handleSendMessage(student.email)}>Message</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+      <section className="hod-section">
+        <h2>Fee Status</h2>
+        <table className="hod-table">
+          <thead>
+            <tr><th>Admission No</th><th>Name</th><th>Department</th><th>Fees</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            {allStudents.map(student => (
+              <tr key={student.id}>
+                <td>{student.admission_no}</td>
+                <td>{student.name}</td>
+                <td>{student.department}</td>
+                <td>{student.fees}</td>
+                <td>{student.feeStat}</td>
               </tr>
             ))}
           </tbody>
@@ -207,6 +255,18 @@ const HodHome = () => {
             <div className="modal-actions">
               <button onClick={handlUpdate}>Update</button>
               <button onClick={handleCloseFeeModal} className="reject">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isAllFeeModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Update Fees</h3>
+            <textarea value={allFees} onChange={(e) => setAllFees(e.target.value)} />
+            <div className="modal-actions">
+              <button onClick={handlUpdateAll}>Update</button>
+              <button onClick={handleCloseAllFeeModal} className="reject">Close</button>
             </div>
           </div>
         </div>

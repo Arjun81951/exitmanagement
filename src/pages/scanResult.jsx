@@ -1,5 +1,5 @@
 import React,{useState,useEffect }from 'react';
-import { useLocation, cccc } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios'; // Import Axios
 
 const ScanResult = () => {
@@ -7,6 +7,8 @@ const ScanResult = () => {
     const Location = useLocation();
     const queryParams = new URLSearchParams(Location.search);
     const time = queryParams.get('time');
+    const todayDate = new Date().toLocaleDateString('en-GB'); // Format date to dd/mm/yyyy
+
     const id = queryParams.get('id');
     const [requestDetails, setRequestDetails] = useState(null); // State to store request details
     useEffect(() => {
@@ -64,6 +66,8 @@ const ScanResult = () => {
         <div style={{ textAlign: 'center', marginTop: '20%' }}>
             <h1 style={{ fontSize: '4rem', color: 'green' }}>{requestDetails}</h1>
             <p style={{ fontSize: '1.5rem', color: 'gray' }}>Time:{time}    </p>
+            <p style={{ fontSize: '1.5rem', color: 'gray' }}>Date:{todayDate}    </p>
+
             <button 
                 onClick={handleDone} 
                 style={{ marginTop: '20px', padding: '10px 20px', fontSize: '1rem', cursor: 'pointer' }}
